@@ -7,8 +7,14 @@
     <h1 class="text-center text-light">All events<br>in one Place</h1>
 </div>
 <div class="container">
-    <div class="d-flex justify-content-center my-2">
-        <a href="{{ path('events_new') }}" class="btn btn-primary">Add Event</a>
+    <div class="d-flex justify-content-evenly my-2">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-primary m-2">{{ button_label|default('Filter') }}</button>
+            <a href="/" class="btn btn-primary m-2">Reset</a>
+        </div>
+        {{ form_end(form) }}
     </div>
     <div class="row justify-content-evenly my-2">
     {% for event in events %}

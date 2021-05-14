@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Events;
+use App\Entity\EventsTypes;
 use App\Form\EventsType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
  * @Route("/events")
@@ -15,17 +18,44 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventsController extends AbstractController
 {
     /**
-     * @Route("/", name="events_index", methods={"GET"})
+     * @Route("/", name="events_index", methods={"GET", "POST"})
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $events = $this->getDoctrine()
+        $form = $this->createFormBuilder()
+            ->add('fkType', EntityType::class,[
+                'class' => EventsTypes::class,
+                'choice_label' => 'type',
+                'label' => 'Filter by Type',
+                'attr' => ['class' => 'form-select', 'style'=>'margin-bottom:15px']
+                ])
+            ->getForm();
+            $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $type = $form['fkType'];
+            $filter = $type->getNormData();
+            $id = $filter->getId();
+
+            $events = $this->getDoctrine()
+            ->getRepository(Events::class)
+            ->findBy(
+                ['fkType' => ['id' => $id]]
+            );
+
+            return $this->render('events/index.html.twig', [
+                'events' => $events,
+                'form' => $form->createView()]);
+        } else {
+            $events = $this->getDoctrine()
             ->getRepository(Events::class)
             ->findAll();
 
-        return $this->render('events/index.html.twig', [
-            'events' => $events,
+            return $this->render('events/index.html.twig', [
+                'events' => $events,
+                'form' => $form->createView()
         ]);
+        }
     }
 
     /**
@@ -100,7 +130,23 @@ class EventsController extends AbstractController
      */
     public function forsure($id): Response
     {
-        $event = $this->getDoctrine()->getRepository('App:Events')->find($id);
+        $event = $this->getDoctrine()->getRepository(Events::class)->find($id);
        return $this->render('events/sure.html.twig', array('event' => $event));
+    }
+    
+    /**
+     * @Route("/filter", name="event_filter")
+     */
+    public function filter(Request $request): Response
+    {
+
+        dd($request);
+        // $events = $this->getDoctrine()
+        //     ->getRepository(Events::class)
+        //     ->find($fkType);
+        
+        // return $this->render('events/filter.html.twig', [
+        //         'event' => $event,
+        // ]);
     }
 }
