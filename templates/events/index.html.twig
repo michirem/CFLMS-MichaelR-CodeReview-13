@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home - Events{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-center align-items-center" style="background-image: url(https://images.unsplash.com/photo-1587031547865-02677a5dedac?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80); height: 50vh; background-size: cover; background-repeat: no-repeat; background-position: 50% 45%;">
+    <h1 class="text-center text-light">All events<br>in one Place</h1>
+</div>
+<div class="container">
+    <div class="d-flex justify-content-center my-2">
+        <a href="{{ path('events_new') }}" class="btn btn-primary">Add Event</a>
+    </div>
+    <div class="row justify-content-evenly my-2">
+    {% for event in events %}
+    <div class="card col-6 my-2" style="width: 18rem;">
+        <img src="{{ event.image }}" class="card-img-top" alt="{{ event.name }} picture">
+        <div class="card-body">
+            <h5 class="card-title">{{ event.name }}</h5>
+            <p class="card-text">Location: {{ event.location }}</p>
+            <p class="card-text">City: {{ event.city }}</p>
+            <p class="card-text">Date / Time: {{ event.datetime ? event.datetime|date('d-m-Y, H:i') : '' }}</p>
+            <p class="card-text">Homepage: <a href="{{ event.url }}">{{ event.url }}</a></p>
+            <div class="d-flex justify-content-evenly">
+                <a href="{{ path('events_show', {'id': event.id}) }}" class="btn btn-primary btn-sm m-2">Details</a>
+                <a href="{{ path('events_edit', {'id': event.id}) }}" class="btn btn-success btn-sm m-2">Edit</a>
+                <a href="{{ path('events_sure', {'id': event.id}) }}" class="btn btn-danger btn-sm m-2">Delete</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div>
+        no records found
+    <div>
+    {% endfor %}
+</div>
+{% endblock %}

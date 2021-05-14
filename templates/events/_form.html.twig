@@ -1,0 +1,7 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-primary m-2">{{ button_label|default('Create') }}</button>
+        <a class="btn btn-danger m-2" href="{{ path('events_index') }}">Back</a>
+    </div>
+{{ form_end(form) }}

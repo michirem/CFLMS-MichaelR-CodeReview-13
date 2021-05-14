@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Events{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-center align-items-center" style="background-image: url('{{ event.image }}'); height: 50vh; background-size: contain; background-repeat: no-repeat; background-position: 50% 50%;">
+</div>
+<div class="container">
+    <h1 class="text-center my-2">{{ event.name }}</h1>
+    {{ include('events/_form.html.twig', {'button_label': 'Update'}) }}
+</div>
+{% endblock %}
